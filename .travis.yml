@@ -1,0 +1,8 @@
+language: python
+
+services:
+  - docker
+
+script:
+  - ./generate.py --os centos7 --cuda 9.1 --cudnn 7 --variant devel
+  - docker build -t image .
