@@ -15,6 +15,13 @@ The following is an example to generate `Dockerfile` (and `cuda.repo`) that inst
 $ ./generate.py --os centos7 --cuda 9.1 --cudnn 7 --variant devel --base fedora:27
 ```
 
+By default, privilege used to run the image is reset to `root`.
+You can override this behavior by specifying `--user` option.
+
+```
+$ ./generate.py --os ubuntu16.04 --cuda 9.0 --cudnn 7 --base jupyter/datascience-notebook --user jovyan
+```
+
 See `./generate.py --help` for the detailed usage.
 
 ## Notes
