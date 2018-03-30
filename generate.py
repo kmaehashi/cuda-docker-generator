@@ -52,9 +52,8 @@ def _generate_dockerfile(urls, os, base_image, user):
     default_image = SYSTEMS[os]['base']
     lines = [
         '# FROM {}'.format(default_image),
-        'ARG image={}'.format(
+        'FROM {}'.format(
             default_image if base_image is None else base_image),
-        'FROM ${image}',
         '',
         'USER root',
     ]
