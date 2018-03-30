@@ -30,6 +30,7 @@ def _log(msg):
     if _verbose:
         sys.stderr.write('{}\n'.format(msg))
 
+
 def _fetch_file(url):
     _log('Downloading: {}'.format(url))
     return urlopen(url).read().decode()
@@ -47,13 +48,15 @@ def _fetch_dockerfile(url):
     return lines
 
 
-def _generate_dockerfile(urls, os, base_image):
+def _generate_dockerfile(urls, os, base_image, user):
     default_image = SYSTEMS[os]['base']
     lines = [
         '# FROM {}'.format(default_image),
         'ARG image={}'.format(
             default_image if base_image is None else base_image),
         'FROM ${image}',
+        '',
+        'USER root',
     ]
 
     for url in urls:
@@ -63,6 +66,16 @@ def _generate_dockerfile(urls, os, base_image):
             '### {}'.format(url),
             '###',
         ] + _fetch_dockerfile(url)
+
+    if user is not None:
+        lines += [
+            '',
+            '###',
+            '### Reset User and Group',
+            '###',
+            'USER {}'.format(user),
+        ]
+
     return '\n'.join(lines)
 
 
@@ -129,6 +142,10 @@ def parse_args(args):
         '--base', type=str, default=None,
         help='Base Docker image')
     parser.add_argument(
+        '--user', type=str, default=None,
+        help='User and group to use when running the image; specify '
+             '<user>[:<group>] or <UID>[:<GID>]')
+    parser.add_argument(
         '--output', type=str, default='.',
         help='Path to the output directory')
     parser.add_argument(
@@ -155,7 +172,7 @@ def main(args):
     _log('-------------------------------')
 
     # Download resources.
-    dockerfile = _generate_dockerfile(df_urls, conf.os, conf.base)
+    dockerfile = _generate_dockerfile(df_urls, conf.os, conf.base, conf.user)
     assets = [_fetch_file(url) for url in asset_urls]
 
     # Output.
