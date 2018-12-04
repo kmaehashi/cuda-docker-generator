@@ -15,12 +15,13 @@ except ImportError:
 SYSTEMS = {
     'ubuntu14.04': {'base': 'ubuntu:14.04'},
     'ubuntu16.04': {'base': 'ubuntu:16.04'},
-    'ubuntu17.04': {'base': 'ubuntu:17.04'},
+    'ubuntu18.04': {'base': 'ubuntu:18.04'},
     'centos6':     {'base': 'centos:6'},
     'centos7':     {'base': 'centos:7'},
 }
 
-CUDA = ['6.5', '7.0', '7.5', '8.0', '9.0', '9.1']
+CUDA_NOBASE = ['6.5', '7.0', '7.5', '8.0']
+CUDA = CUDA_NOBASE + ['9.0', '9.1', '9.2', '10.0']
 CUDNN = ['2', '3', '4', '5', '6', '7']
 
 _verbose = False
@@ -83,7 +84,7 @@ def _generate_urls(conf):
     assets = []
 
     # Dockerfiles.
-    base_available = conf.cuda.startswith('9.')
+    base_available = conf.cuda not in CUDA_NOBASE
     if base_available:
         stages += ['base']
 
