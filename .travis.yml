@@ -6,3 +6,7 @@ services:
 script:
   - ./generate.py --os centos7 --cuda 9.1 --cudnn 7 --variant devel
   - docker build -t image .
+  - ./generate.py --os ubuntu16.04 --cuda 9.2 --cudnn 7 --variant base
+  - docker build -t image .
+  - ./generate.py --os ubuntu18.04 --cuda 10.0 --cudnn 7 --variant runtime
+  - docker build -t image .
