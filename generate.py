@@ -13,16 +13,17 @@ except ImportError:
 
 
 SYSTEMS = {
-    'ubuntu14.04': {'base': 'ubuntu:14.04'},
-    'ubuntu16.04': {'base': 'ubuntu:16.04'},
-    'ubuntu18.04': {'base': 'ubuntu:18.04'},
-    'centos6':     {'base': 'centos:6'},
-    'centos7':     {'base': 'centos:7'},
+    'ubuntu16.04-x86_64': {'base': 'ubuntu:16.04'},
+    'ubuntu18.04-x86_64': {'base': 'ubuntu:18.04'},
+    'ubuntu20.04-x86_64': {'base': 'ubuntu:20.04'},
+    'centos6-x86_64':     {'base': 'centos:6'},
+    'centos7-x86_64':     {'base': 'centos:7'},
+    'centos8-x86_64':     {'base': 'centos:8'},
 }
 
 CUDA_NOBASE = ['6.5', '7.0', '7.5', '8.0']
-CUDA = CUDA_NOBASE + ['9.0', '9.1', '9.2', '10.0']
-CUDNN = ['2', '3', '4', '5', '6', '7']
+CUDA = CUDA_NOBASE + ['9.0', '9.1', '9.2', '10.0', '10.1', '10.2', '11.0.3', '11.1.1', '11.2.0', '11.2.1', '11.3.0', '11.3.1']
+CUDNN = ['2', '3', '4', '5', '6', '7', '8']
 
 _verbose = False
 
@@ -101,18 +102,16 @@ def _generate_urls(conf):
 
     # Assets
     if conf.os.startswith('centos'):
-        assets += ['{}/cuda.repo'.format(stages[0])]
+        assets += ['cuda.repo']
 
     # Translate to URL.
+    url = 'https://gitlab.com/nvidia/container-images/cuda/-/raw/master/dist/{cuda}/{os}/{variant}/{filename}'
     df_urls = [
-        'https://gitlab.com/nvidia/cuda/raw/{}/{}/{}/Dockerfile'.format(
-            conf.os, conf.cuda, stage)
+        url.format(os=conf.os, cuda=conf.cuda, variant=stage, filename='Dockerfile')
         for stage in stages
     ]
-
     asset_urls = [
-        'https://gitlab.com/nvidia/cuda/raw/{}/{}/{}'.format(
-            conf.os, conf.cuda, asset)
+        url.format(os=conf.os, cuda=conf.cuda, variant=stages[0], filename=asset)
         for asset in assets
     ]
 
@@ -191,5 +190,4 @@ def main(args):
 
 
 if __name__ == '__main__':
-
     main(sys.argv)
