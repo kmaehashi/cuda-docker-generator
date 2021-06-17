@@ -35,7 +35,11 @@ def _log(msg):
 
 def _fetch_file(url):
     _log('Downloading: {}'.format(url))
-    return urlopen(url).read().decode()
+    try:
+        return urlopen(url).read().decode()
+    except:
+        print('Failed to download: {}'.format(url))
+        raise
 
 
 def _fetch_dockerfile(url):
